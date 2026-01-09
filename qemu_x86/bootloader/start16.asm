@@ -9,9 +9,6 @@ start:
     mov ss, ax
     mov sp, 0x7C00
 
-    ; ----------------------------
-    ; Load stage-2 (8 sectors)
-    ; ----------------------------
     mov ax, 0x0000
     mov es, ax
     mov bx, 0x8000
@@ -27,10 +24,6 @@ start:
 
     cli
     lgdt [gdt_desc]
-
-    ; ----------------------------
-    ; Enter protected mode
-    ; ----------------------------
     mov eax, cr0
     or eax, 1
     mov cr0, eax
@@ -41,9 +34,6 @@ disk_error:
     hlt
     jmp disk_error
 
-; ================================
-; 32-bit protected mode
-; ================================
 BITS 32
 protected_start:
     mov ax, DATA_SEL
@@ -55,9 +45,6 @@ protected_start:
 
     jmp 0x8000            ; jump to stage-2 entry
 
-; ================================
-; GDT
-; ================================
 gdt_start:
     dq 0x0000000000000000
     dq 0x00CF9A000000FFFF

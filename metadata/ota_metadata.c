@@ -1,7 +1,6 @@
 #include "ota_metadata.h"
 #include "memutils.h"
 #define printf(...) do {} while (0)
-/* Simulated persistent storage */
 static ota_metadata_t stored_metadata;
 
 uint32_t ota_metadata_compute_crc(const ota_metadata_t *meta)
@@ -12,7 +11,7 @@ uint32_t ota_metadata_compute_crc(const ota_metadata_t *meta)
     uint32_t len = sizeof(ota_metadata_t) - sizeof(uint32_t);
     for (uint32_t i = 0; i < len; i++){
         crc ^= data[i];
-    } // exclude crc field
+    } 
     return crc;
 }
 
@@ -49,7 +48,7 @@ void ota_metadata_reset(ota_metadata_t *meta)
     memset(meta, 0, sizeof(*meta));
 
     meta->active_slot  = SLOT_A;
-    meta->pending_slot = SLOT_B;   // CRITICAL
+    meta->pending_slot = SLOT_B;   
     meta->state        = OTA_STATE_IDLE;
     meta->boot_attempts = 0;
     meta->firmware_version = 1;

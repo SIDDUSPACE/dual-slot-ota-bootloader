@@ -1,16 +1,4 @@
-/*
- * Stage-2 OTA Bootloader
- * Firmware Confirmation API
- * CRC + Dual Metadata + Persistent Disk Storage
- * 32-bit protected mode
- * VGA output only
- */
-
 #include <stdint.h>
-
-/* =====================================================
- * VGA OUTPUT
- * ===================================================== */
 static volatile uint16_t *vga = (volatile uint16_t *)0xB8000;
 static int cursor = 0;
 
@@ -33,9 +21,6 @@ static void vga_puts(const char *s, uint8_t color)
     vga_putc('\n', color);
 }
 
-/* =====================================================
- * OTA DEFINITIONS
- * ===================================================== */
 #define OTA_MAGIC 0xDEADBEEF
 #define MAX_TEST_ATTEMPTS 3
 #define OTA_META_LBA_PRIMARY  10
@@ -63,10 +48,6 @@ typedef struct {
     uint32_t boot_attempts;
     uint32_t crc;
 } ota_metadata_t;
-
-/* =====================================================
- * ATA PIO
- * ===================================================== */
 #define ATA_DATA       0x1F0
 #define ATA_SECTOR_CNT 0x1F2
 #define ATA_LBA_LO     0x1F3
@@ -140,9 +121,6 @@ static void disk_write_sector(uint32_t lba, const void *buf)
         outw(ATA_DATA, p[i]);
 }
 
-/* =====================================================
- * CRC32
- * ===================================================== */
 static uint32_t crc32(const void *d, uint32_t n)
 {
     const uint8_t *p = d;
@@ -156,9 +134,6 @@ static uint32_t crc32(const void *d, uint32_t n)
     return ~c;
 }
 
-/* =====================================================
- * OTA METADATA
- * ===================================================== */
 static ota_metadata_t meta;
 
 static int meta_valid(const ota_metadata_t *m)
@@ -200,9 +175,7 @@ static void ota_metadata_save(void)
     meta_write(OTA_META_LBA_BACKUP);
 }
 
-/* =====================================================
- * FIRMWARE CONFIRMATION API
- * ===================================================== */
+
 void ota_confirm(void)
 {
     vga_puts("Firmware CONFIRMED", 0x02);
@@ -211,9 +184,6 @@ void ota_confirm(void)
     ota_metadata_save();
 }
 
-/* =====================================================
- * FIRMWARE PAYLOADS
- * ===================================================== */
 static void firmware_a_main(void)
 {
     vga_puts("Firmware A running", 0x0A);
@@ -233,9 +203,7 @@ static void jump_to_firmware(slot_t s)
     else firmware_b_main();
 }
 
-/* =====================================================
- * BOOTLOADER ENTRY
- * ===================================================== */
+
 void bootloader_main(void)
 {
     vga_clear();
@@ -249,7 +217,7 @@ void bootloader_main(void)
         meta.state = OTA_STATE_TESTING;
         meta.boot_attempts = 0;
         ota_metadata_save();
-        /* fallthrough */
+
 
     case OTA_STATE_TESTING:
         meta.boot_attempts++;

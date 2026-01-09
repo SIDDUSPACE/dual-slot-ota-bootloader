@@ -11,14 +11,12 @@ start:
     sti
 
     mov [boot_drive], dl
-
-    ; Load stage-2 (4 sectors) to 0000:8000
     xor ax, ax
     mov es, ax
     mov bx, 0x8000
 
     mov ah, 0x02
-    mov al, 4          ; 🔴 MUST match stage2 size
+    mov al, 4          
     mov ch, 0
     mov cl, 2
     mov dh, 0

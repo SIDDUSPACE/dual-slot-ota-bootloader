@@ -1,15 +1,10 @@
-# Build artifacts
 *.o
-*.elf
 *.bin
+*.elf
 *.map
-
-# Disk images
 disk.img
-
-# Temporary / test
 a.out
 test.elf
-
-# Editor
+*.iso
 .vscode/
+

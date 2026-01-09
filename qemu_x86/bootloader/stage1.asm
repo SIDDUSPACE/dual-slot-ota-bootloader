@@ -1,8 +1,3 @@
-; ==================================================
-; Stage-1 Bootloader (Floppy, QEMU-safe)
-; Loads stage2.bin to 0x00100000
-; ==================================================
-
 BITS 16
 ORG 0x7C00
 
@@ -19,17 +14,11 @@ start:
     mov al, 'S'
     int 0x10
 
-; -------------------------------
-; Reset disk system (MANDATORY)
-; -------------------------------
     mov ah, 0x00
     mov dl, 0x00        ; floppy
     int 0x13
     jc disk_error
 
-; -------------------------------
-; Load stage2 into 0000:8000
-; -------------------------------
     mov ax, 0x0000
     mov es, ax
     mov bx, 0x8000      ; safe buffer
@@ -43,9 +32,6 @@ start:
     int 0x13
     jc disk_error
 
-; -------------------------------
-; Copy to 1MB (0x00100000)
-; -------------------------------
     cli
     mov si, 0x8000
     mov di, 0x0000
@@ -54,9 +40,6 @@ start:
     mov cx, 2560        ; 5 * 512 / 2
     rep movsw
 
-; -------------------------------
-; Enter protected mode
-; -------------------------------
     lgdt [gdt_desc]
 
     mov eax, cr0
@@ -65,9 +48,6 @@ start:
 
     jmp CODE_SEL:pm_start
 
-; -------------------------------
-; Protected mode
-; -------------------------------
 BITS 32
 pm_start:
     mov ax, DATA_SEL
@@ -80,9 +60,6 @@ pm_start:
 
     jmp 0x00100000
 
-; -------------------------------
-; Disk error handler
-; -------------------------------
 disk_error:
     mov si, err_msg
 .print:
@@ -95,9 +72,6 @@ disk_error:
 
 err_msg db "Disk read error", 0
 
-; -------------------------------
-; GDT
-; -------------------------------
 gdt_start:
     dq 0x0000000000000000
     dq 0x00CF9A000000FFFF
@@ -110,9 +84,5 @@ gdt_desc:
 
 CODE_SEL equ 0x08
 DATA_SEL equ 0x10
-
-; -------------------------------
-; Boot signature
-; -------------------------------
 times 510 - ($ - $$) db 0
 dw 0xAA55

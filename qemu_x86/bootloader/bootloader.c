@@ -26,9 +26,9 @@ static void vga_print(int row, int col, const char *s, uint8_t color)
     }
 }
 
-/* =====================================================
+/* ==
  * FIRMWARE PAYLOADS (demo)
- * ===================================================== */
+ * == */
 static void firmware_a_main(void)
 {
     vga_print(4, 0, "Firmware A running", 0x0A);
@@ -36,9 +36,9 @@ static void firmware_a_main(void)
         __asm__ volatile ("hlt");
 }
 
-/* =====================================================
+/* ==
  * BOOTLOADER ENTRY — ROLLBACK STATE
- * ===================================================== */
+ * == */
 void bootloader_main(void)
 {
     vga_clear();
